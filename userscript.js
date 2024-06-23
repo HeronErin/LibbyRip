@@ -6,6 +6,7 @@
 // @author       HeronErin
 // @match        *://*.listen.libbyapp.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=libbyapp.com
+// @require      https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js
 // @grant        none
 // ==/UserScript==
 
@@ -23,6 +24,26 @@
         padding: .25em;
         font-size: 1em;
     }
+    .foldMenu{
+        position: absolute;
+        width: 100%;
+        height: 0%;
+        z-index: 1000;
+
+        background-color: grey;
+
+        overflow-x: hidden;
+        overflow-y: scroll; 
+
+        transition: height 0.3s
+    }
+    .active{
+        height: 40%;
+        border: double;
+    }
+    .pChapLabel{
+        font-size: 2em;
+    }
 
     `;
     const newNav = `
@@ -30,8 +51,13 @@
         <a class="pLink" id="dow"> <h1> Download chapters </h1> </a>
         <a class="pLink" id="exp"> <h1> Export audiobook </h1> </a>
     `;
-
-    function buildPirateNav(){
+    const chaptersMenu = `
+        <h2>This book contains {CHAPTERS} chapters.</h2>
+    `;
+    let chapterMenuElem;
+    let downloadElem;
+    function buildPirateUi(){
+        // Create the nav
         let nav = document.createElement("div");
         nav.innerHTML = newNav;
         nav.querySelector("#chap").onclick = viewChapters;
@@ -40,6 +66,40 @@
         nav.classList.add("pNav");
         let pbar = document.querySelector(".nav-progress-bar");
         pbar.insertBefore(nav, pbar.children[1]);
+
+        // Create the chapters menu
+        chapterMenuElem = document.createElement("div");
+        chapterMenuElem.classList.add("foldMenu");
+        chapterMenuElem.setAttribute("tabindex", "-1"); // Don't mess with tab key
+        const urls = getUrls();
+
+        chapterMenuElem.innerHTML = chaptersMenu.replace("{CHAPTERS}", urls.length);
+        document.body.appendChild(chapterMenuElem);
+
+        for (let url of urls){
+            let span = document.createElement("span");
+            span.classList.add("pChapLabel")
+            span.textContent = "#" + (1 + url.index);
+
+            let audio = document.createElement("audio");
+            audio.setAttribute("controls", "");
+            let source = document.createElement("source");
+            source.setAttribute("src", url.url);
+            source.setAttribute("type", url.type);
+            audio.appendChild(source);
+
+            chapterMenuElem.appendChild(span);
+            chapterMenuElem.appendChild(document.createElement("br"));
+            chapterMenuElem.appendChild(audio);
+            chapterMenuElem.appendChild(document.createElement("br"));
+        }
+        
+        
+        downloadElem = document.createElement("div");
+        downloadElem.classList.add("foldMenu");
+        document.body.appendChild(downloadElem);
+
+
     }
     function repairSplinePath(s, si){
         s = window.origin + "/" + s;
@@ -49,22 +109,102 @@
     }
     function getUrls(){
         let ret = [];
-        for (spine of BIF.map.spine){
+        for (let spine of BIF.map.spine){
             let data = {
                 url: repairSplinePath(spine.path, spine["-odread-spine-position"]),
                 index : spine["-odread-spine-position"],
                 duration: spine["audio-duration"],
-                size: spine["-odread-file-bytes"]
+                size: spine["-odread-file-bytes"],
+                type: spine["media-type"]
             };
             ret.push(data);
         }
         return ret;
     }
+    function paddy(num, padlen, padchar) {
+        var pad_char = typeof padchar !== 'undefined' ? padchar : '0';
+        var pad = new Array(1 + padlen).join(pad_char);
+        return (pad + num).slice(-pad.length);
+    }
     function viewChapters(){
-        console.log(JSON.stringify(getUrls()));
+        // console.log(JSON.stringify(getUrls()));
+        if (chapterMenuElem.classList.contains("active"))
+            chapterMenuElem.classList.remove("active")
+        else
+            chapterMenuElem.classList.add("active")
+    }
+    let downloadState = -1;
+    async function createAndDownloadZip(urls) {
+      const zip = new JSZip();
+
+      // Fetch all files and add them to the zip
+      const fetchPromises = urls.map(async (url) => {
+        const response = await fetch(url.url);
+        const blob = await response.blob();
+        const filename = "Chapter " + paddy(url.index + 1, 3) + ".mp3";
+
+        let partElem = document.createElement("div");
+        partElem.textContent = "Download of "+ filename + " complete";
+        downloadElem.appendChild(partElem);
+        downloadElem.scrollTo(0, downloadElem.scrollHeight);
+
+        downloadState += 1;
+
+        zip.file(filename, blob, { compression: "STORE" });
+      });
+
+      // Wait for all files to be fetched and added to the zip
+      await Promise.all(fetchPromises);
+
+      
+      downloadElem.innerHTML += "<br><b>Downloads complete!</b> Now waiting for them to be assembled! (This might take a <b><i>minute</i></b>) <br>";
+      downloadElem.innerHTML += "Zip progress: <b id='zipProg'>0</b>%";
+
+      downloadElem.scrollTo(0, downloadElem.scrollHeight);
+
+      // Generate the zip file
+      const zipBlob = await zip.generateAsync({ 
+        type: 'blob',
+        compression: "STORE",
+        streamFiles: true,
+      }, (meta)=>{
+        if (meta.percent)
+            downloadElem.querySelector("#zipProg").textContent = meta.percent.toFixed(2);
+        
+      });
+
+      downloadElem.innerHTML += "Generated zip file! <br>"
+      downloadElem.scrollTo(0, downloadElem.scrollHeight);
+
+      // Create a download link for the zip file
+      const downloadUrl = URL.createObjectURL(zipBlob);
+
+      downloadElem.innerHTML += "Generated zip file link! <br>"
+      downloadElem.scrollTo(0, downloadElem.scrollHeight);
+      
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download = 'mp3_files.zip';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      downloadState = -1;
+      downloadElem.innerHTML = ""
+      downloadElem.classList.remove("active");
+
+      // Clean up the object URL
+      setTimeout(() => URL.revokeObjectURL(downloadUrl), 100);
     }
     function downloadChapters(){
+        if (downloadState != -1)
+            return;
         
+        downloadState = 0;
+        downloadElem.classList.add("active");
+        downloadElem.innerHTML = "<b>Starting download</b><br>";
+        createAndDownloadZip(getUrls()).then((p)=>{});
+
     }
     function exportChapters(){
         
@@ -77,7 +217,7 @@
         s.innerHTML = CSS;
         document.head.appendChild(s)
 
-        buildPirateNav();
+        buildPirateUi();
     }
 
     // The "BIF" contains all the info we need to download

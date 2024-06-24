@@ -1,13 +1,16 @@
 // ==UserScript==
-// @name         LibreGRAB
-// @namespace    http://tampermonkey.net/
-// @version      2024-06-22
-// @description  Download all the booty!
-// @author       HeronErin
-// @match        *://*.listen.libbyapp.com/*
-// @icon         https://www.google.com/s2/favicons?sz=64&domain=libbyapp.com
-// @require      https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js
-// @grant        none
+// @name          LibreGRAB
+// @namespace     http://tampermonkey.net/
+// @version       2024-06-24
+// @description   Download all the booty!
+// @author        HeronErin
+// @license       MIT
+// @orign-license MIT
+// @supportURL    https://github.com/HeronErin/LibbyRip/issues
+// @match         *://*.listen.libbyapp.com/*
+// @icon          https://www.google.com/s2/favicons?sz=64&domain=libbyapp.com
+// @require       https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js
+// @grant         none
 // ==/UserScript==
 
 (()=>{
@@ -75,25 +78,6 @@
 
         chapterMenuElem.innerHTML = chaptersMenu.replace("{CHAPTERS}", urls.length);
         document.body.appendChild(chapterMenuElem);
-
-        for (let url of urls){
-            let span = document.createElement("span");
-            span.classList.add("pChapLabel")
-            span.textContent = "#" + (1 + url.index);
-
-            let audio = document.createElement("audio");
-            audio.setAttribute("controls", "");
-            let source = document.createElement("source");
-            source.setAttribute("src", url.url);
-            source.setAttribute("type", url.type);
-            audio.appendChild(source);
-
-            chapterMenuElem.appendChild(span);
-            chapterMenuElem.appendChild(document.createElement("br"));
-            chapterMenuElem.appendChild(audio);
-            chapterMenuElem.appendChild(document.createElement("br"));
-        }
-        
         
         downloadElem = document.createElement("div");
         downloadElem.classList.add("foldMenu");
@@ -126,15 +110,68 @@
         var pad = new Array(1 + padlen).join(pad_char);
         return (pad + num).slice(-pad.length);
     }
+    let firstChapClick = true;
     function viewChapters(){
-        // console.log(JSON.stringify(getUrls()));
+        // Populate chapters ONLY after first viewing
+        if (firstChapClick){
+            firstChapClick = false;
+            for (let url of getUrls()){
+                let span = document.createElement("span");
+                span.classList.add("pChapLabel")
+                span.textContent = "#" + (1 + url.index);
+
+                let audio = document.createElement("audio");
+                audio.setAttribute("controls", "");
+                let source = document.createElement("source");
+                source.setAttribute("src", url.url);
+                source.setAttribute("type", url.type);
+                audio.appendChild(source);
+
+                chapterMenuElem.appendChild(span);
+                chapterMenuElem.appendChild(document.createElement("br"));
+                chapterMenuElem.appendChild(audio);
+                chapterMenuElem.appendChild(document.createElement("br"));
+            }
+        }
         if (chapterMenuElem.classList.contains("active"))
             chapterMenuElem.classList.remove("active")
         else
             chapterMenuElem.classList.add("active")
     }
+    async function createMetadata(zip){
+        let folder = zip.folder("metadata");
+
+        let spineToIndex = BIF.map.spine.map((x)=>x["-odread-original-path"]);
+        let metadata = {
+            title: BIF.map.title.main,
+            description: BIF.map.description,
+            coverUrl: window.tData.codex.title.cover.imageURL,
+            creator: BIF.map.creator,
+            spine: BIF.map.spine.map((x)=>{return {
+                duration: x["audio-duration"],
+                type: x["media-type"],
+                bitrate: x["audio-bitrate"],
+            }})
+        };
+        const response = await fetch(metadata.coverUrl);
+        const blob = await response.blob();
+        const csplit = metadata.coverUrl.split(".");
+        folder.file("cover." + csplit[csplit.length-1], blob, { compression: "STORE" });
+
+        if (BIF.map.nav.toc != undefined){
+            metadata.chapters = BIF.map.nav.toc.map((rChap)=>{
+                return {
+                    title: rChap.title,
+                    spine: spineToIndex.indexOf(rChap.path.split("#")[0]),
+                    offset: 1*(rChap.path.split("#")[1] | 0)
+                };
+            });
+        }
+        folder.file("metadata.json", JSON.stringify(metadata, null, 2));
+    }
+
     let downloadState = -1;
-    async function createAndDownloadZip(urls) {
+    async function createAndDownloadZip(urls, addMeta) {
       const zip = new JSZip();
 
       // Fetch all files and add them to the zip
@@ -152,6 +189,8 @@
 
         zip.file(filename, blob, { compression: "STORE" });
       });
+      if (addMeta)
+        fetchPromises.push(createMetadata(zip));
 
       // Wait for all files to be fetched and added to the zip
       await Promise.all(fetchPromises);
@@ -184,7 +223,7 @@
       
       const link = document.createElement('a');
       link.href = downloadUrl;
-      link.download = 'mp3_files.zip';
+      link.download = BIF.map.title.main + '.zip';
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -207,7 +246,13 @@
 
     }
     function exportChapters(){
+        if (downloadState != -1)
+            return;
         
+        downloadState = 0;
+        downloadElem.classList.add("active");
+        downloadElem.innerHTML = "<b>Starting export</b><br>";
+        createAndDownloadZip(getUrls(), true).then((p)=>{});
     }
 
     // Main entry point for audiobooks

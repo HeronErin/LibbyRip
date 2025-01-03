@@ -193,6 +193,8 @@
 
         downloadState += 1;
 
+        // Add to zip, STORE is the only method that won't crash the browser
+        // at such high file sizes
         zip.file(filename, blob, { compression: "STORE" });
       });
       if (addMeta)

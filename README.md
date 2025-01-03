@@ -4,7 +4,7 @@ Rip all your favorite audiobooks from libby!
 
 ![Exporting audiobook](imgs/export.png)
 ![Showing chapters](imgs/chapters.png)
-<sup>Be careful, I have had a library cared banned in the past from using this tool </sup>
+<sup>Be careful, I have had a library card banned in the past from using this tool </sup>
 
 ## How to use
 

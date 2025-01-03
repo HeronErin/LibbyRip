@@ -4,12 +4,15 @@ Rip all your favorite audiobooks from libby!
 
 ![Exporting audiobook](imgs/export.png)
 ![Showing chapters](imgs/chapters.png)
+<sup>Be careful, I have had a library cared banned in the past from using this tool </sup>
 
 ## How to use
 
 1. Install the [TamperMonkey](https://www.tampermonkey.net/) extension for your browser.
 2. Install the userscript from the [GreasyFork page](https://greasyfork.org/en/scripts/498782-libregrab)
 3. Find your audiobook on Libby and export.
+
+
 
 
 ## Using the Python script

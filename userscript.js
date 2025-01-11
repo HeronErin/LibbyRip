@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          LibreGRAB
 // @namespace     http://tampermonkey.net/
-// @version       2025-01-02
+// @version       2025-01-10
 // @description   Download all the booty!
 // @author        HeronErin
 // @license       MIT
@@ -10,8 +10,6 @@
 // @icon          https://www.google.com/s2/favicons?sz=64&domain=libbyapp.com
 // @require       https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js
 // @grant         none
-// @downloadURL https://update.greasyfork.org/scripts/498782/LibreGRAB.user.js
-// @updateURL https://update.greasyfork.org/scripts/498782/LibreGRAB.meta.js
 // ==/UserScript==
 
 (()=>{

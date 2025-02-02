@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          LibreGRAB
 // @namespace     http://tampermonkey.net/
-// @version       2025-01-10
+// @version       2025-02-02
 // @description   Download all the booty!
 // @author        HeronErin
 // @license       MIT
@@ -275,7 +275,7 @@
     // stuff, so we wait until the page is loaded, and the
     // BIF is present, to inject the pirate menu.
     let intr = setInterval(()=>{
-        if (window.BIF != undefined){
+        if (window.BIF != undefined && document.querySelector(".nav-progress-bar") != undefined){
             clearInterval(intr);
             bifFound();
         }

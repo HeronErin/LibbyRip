@@ -24,3 +24,5 @@ pip install -r requirements.txt
 ```
 Then simply run the script, and drag-and-drop the extracted folder with your audiobook in it. (You must extract the zip file, then use the folder with mp3s in it)
 If you wish to use the script to make metadata, you must `Export audiobook` to include the metadata in the zip file.
+
+<sup>Note If you are getting a `Lame tag CRC check failed` mesage, that is **not** an error, just a warning, and it means nothing for you. It will still bake the metadata, just means _something_, is wrong with the mp3 Libby gave. (Not actually sure what the issue is myself)</sup>

@@ -13,7 +13,8 @@ Rip all your favorite audiobooks from libby!
 2. Install the userscript from the [GreasyFork page](https://greasyfork.org/en/scripts/498782-libregrab)
 3. Find your audiobook on Libby and export.
 
-
+**NOTE:** If you do not see anything, it _could_ be because TamperMonkey is not set up properly on Chrome (and chromeium based) browsers! See the TamperMonkey [FAQ](https://www.tampermonkey.net/faq.php#Q209) page here for more info.
+ 
 ## Using the Python script
 
 The Python script provided with this repo provides an optional way to bake metadata in your downloaded media.

@@ -7,6 +7,7 @@
 // @license       MIT
 // @supportURL    https://github.com/HeronErin/LibbyRip/issues
 // @match         *://*.listen.libbyapp.com/*
+// @match         *://*.listen.overdrive.com/*
 // @icon          https://www.google.com/s2/favicons?sz=64&domain=libbyapp.com
 // @require       https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js
 // @grant         none

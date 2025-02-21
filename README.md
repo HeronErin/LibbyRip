@@ -14,6 +14,10 @@ Rip all your favorite audiobooks from libby!
 3. Find your audiobook on Libby and export.
 
 **NOTE:** If you do not see anything, it _could_ be because TamperMonkey is not set up properly on Chrome (and chromeium based) browsers! See the TamperMonkey [FAQ](https://www.tampermonkey.net/faq.php#Q209) page here for more info.
+
+## Converting into a better format
+
+Some people do not want a folder with a bunch of chapter files, and thats alright. You can use the scripts made by [`Cerina witha Sea`](https://github.com/cerinawithasea) to convert them into a more managable format [here](https://github.com/cerinawithasea/libregrab-m4b-creator)!
  
 ## Using the Python script
 
@@ -27,3 +31,6 @@ Then simply run the script, and drag-and-drop the extracted folder with your aud
 If you wish to use the script to make metadata, you must `Export audiobook` to include the metadata in the zip file.
 
 <sup>Note If you are getting a `Lame tag CRC check failed` mesage, that is **not** an error, just a warning, and it means nothing for you. It will still bake the metadata, just means _something_, is wrong with the mp3 Libby gave. (Not actually sure what the issue is myself)</sup>
+
+
+

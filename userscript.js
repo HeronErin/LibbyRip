@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          LibreGRAB
 // @namespace     http://tampermonkey.net/
-// @version       2025-02-22.1
+// @version       2025-02-22.2
 // @description   Download all the booty!
 // @author        HeronErin
 // @license       MIT
@@ -363,12 +363,15 @@
         downloadElem.scrollTo(0, downloadElem.scrollHeight);
 
         let idToIfram = {};
+        let idToMetaId = {};
         components.forEach(c=>{
             // Nothing that can be done here...
             if (c.sheetBox.querySelector("iframe") == null){
                 console.warn("!!!" + window.pages[c.id]);
                 return;
             }
+            c.meta.id = c.meta.id || crypto.randomUUID()
+            idToMetaId[c.id] = c.meta.id;
             idToIfram[c.id] = c.sheetBox.querySelector("iframe");
 
             c.sheetBox.querySelector("iframe").contentWindow.document.querySelectorAll("link").forEach(link=>{
@@ -385,7 +388,7 @@
         for (let i of Object.keys(window.pages)){
             if (idToIfram[i])
                 url = idToIfram[i].src;
-            oebps.file(truncate(i), fixXhtml(url, window.pages[i], imgAssests, cssRegistry[i] || []));
+            oebps.file(truncate(i), fixXhtml(idToMetaId[i], url, window.pages[i], imgAssests, cssRegistry[i] || []));
         }
 
         downloadElem.innerHTML += `Downloading assets <span id="assetGath"> 0/${imgAssests.length} </span><br>`
@@ -408,9 +411,13 @@
             downloadElem.querySelector("span#assetGath").innerHTML = ` ${gc}/${imgAssests.length} `;
         })()));
     }
-    function enforceEpubXHTML(url, htmlString, assetRegistry, links) {
+    function enforceEpubXHTML(metaId, url, htmlString, assetRegistry, links) {
         const parser = new DOMParser();
         const doc = parser.parseFromString(htmlString, 'text/html');
+        const bod = doc.querySelector("body");
+        if (bod){
+            bod.setAttribute("id", metaId);
+        }
 
         // Convert all elements to lowercase tag names
         const elements = doc.getElementsByTagName('*');
@@ -483,9 +490,9 @@
 
         return xhtmlString;
     }
-    function fixXhtml(url, html, assetRegistry, links){
+    function fixXhtml(metaId, url, html, assetRegistry, links){
         html = `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-` + enforceEpubXHTML(url, `<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:pls="http://www.w3.org/2005/01/pronunciation-lexicon" xmlns:ssml="http://www.w3.org/2001/10/synthesis" xmlns:svg="http://www.w3.org/2000/svg">`
+` + enforceEpubXHTML(metaId, url, `<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:pls="http://www.w3.org/2005/01/pronunciation-lexicon" xmlns:ssml="http://www.w3.org/2001/10/synthesis" xmlns:svg="http://www.w3.org/2000/svg">`
             + html + `</html>`, assetRegistry, links);
 
 

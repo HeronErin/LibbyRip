@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          LibreGRAB
 // @namespace     http://tampermonkey.net/
-// @version       2025-02-22
+// @version       2025-02-22.1
 // @description   Download all the booty!
 // @author        HeronErin
 // @license       MIT

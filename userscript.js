@@ -539,25 +539,47 @@
         dcIdentifier.textContent = "" + BIF.map["-odread-buid"];
         metadata.appendChild(dcIdentifier);
 
+        // Language
         if (BIF.map.language.length){
             const dcLanguage = doc.createElementNS('http://purl.org/dc/elements/1.1/', 'dc:language');
             dcLanguage.setAttribute('xsi:type', 'dcterms:RFC4646');
             dcLanguage.textContent = BIF.map.language[0];
+            packageElement.setAttribute('xml:lang', BIF.map.language[0]);
             metadata.appendChild(dcLanguage);
         }
 
+        // Identifier
         const metaIdentifier = doc.createElementNS('http://www.idpf.org/2007/opf', 'meta');
         metaIdentifier.setAttribute('id', 'meta-identifier');
         metaIdentifier.setAttribute('property', 'dcterms:identifier');
         metaIdentifier.textContent = "" + BIF.map["-odread-buid"];
         metadata.appendChild(metaIdentifier);
 
+        // Title
         const dcTitle = doc.createElementNS('http://purl.org/dc/elements/1.1/', 'dc:title');
         dcTitle.setAttribute('id', 'pub-title');
         dcTitle.textContent = BIF.map.title.main;
         metadata.appendChild(dcTitle);
 
-        // Add other elements similarly...
+
+          // Creator (Author)
+        if(BIF.map.creator.length){
+            const dcCreator = doc.createElementNS('http://purl.org/dc/elements/1.1/', 'dc:creator');
+            dcCreator.textContent = BIF.map.creator[0].name;
+            metadata.appendChild(dcCreator);
+        }
+
+        // Description
+        if(BIF.map.description){
+            // Remove HTML tags
+            let p = document.createElement("p");
+            p.innerHTML = BIF.map.description.full;
+
+
+            const dcDescription = doc.createElementNS('http://purl.org/dc/elements/1.1/', 'dc:description');
+            dcDescription.textContent = p.textContent;
+            metadata.appendChild(dcDescription);
+        }
 
         // Step 4: Create the manifest, spine, guide, and other sections...
         const manifest = doc.createElementNS('http://www.idpf.org/2007/opf', 'manifest');

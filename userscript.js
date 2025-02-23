@@ -39,6 +39,7 @@
         z-index: 1000;
 
         background-color: grey;
+        color: white;
 
         overflow-x: hidden;
         overflow-y: scroll;

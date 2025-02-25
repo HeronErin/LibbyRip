@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          LibreGRAB
 // @namespace     http://tampermonkey.net/
-// @version       2025-02-22.2
+// @version       2025-02-25
 // @description   Download all the booty!
 // @author        HeronErin
 // @license       MIT
@@ -58,6 +58,23 @@
        =========================================
     */
 
+
+    // Libby, somewhere, gets the crypto stuff we need for mp3 urls, then removes it before adding it to the BIF.
+    // here, we simply hook json parse to get it for us!
+
+    const old_parse = JSON.parse;
+    let odreadCmptParams = null;
+    JSON.parse = function(...args){
+        let ret = old_parse(...args);
+        if (typeof(ret) == "object" && ret["b"] != undefined && ret["b"]["-odread-cmpt-params"] != undefined){
+            odreadCmptParams = Array.from(ret["b"]["-odread-cmpt-params"]);
+        }
+
+        return ret;
+    }
+
+
+
     const audioBookNav = `
         <a class="pLink" id="chap"> <h1> View chapters </h1> </a>
         <a class="pLink" id="dow"> <h1> Download chapters </h1> </a>
@@ -97,22 +114,10 @@
     }
     function getUrls(){
         let ret = [];
-
-        // New libby version uses a special object for the encoded urls.
-        // They use a much more complex alg for calculating the url, but it is exposed (by accedent)
         for (let spine of BIF.objects.spool.components){
-            // Delete old fake value
-            let old_whereabouts = spine["_whereabouts"];
-            delete spine["_whereabouts"];
-
-            // Call the function to decode the true media path
-            let true_whereabouts = spine._whereabouts();
-
-            // Reset to original value
-            spine["_whereabouts"] = old_whereabouts;
-
             let data = {
-                url: location.origin + "/" + true_whereabouts,
+
+                url: location.origin + "/" + spine.meta.path + "?" + odreadCmptParams[spine.spinePosition],
                 index : spine.meta["-odread-spine-position"],
                 duration: spine.meta["audio-duration"],
                 size: spine.meta["-odread-file-bytes"],
@@ -278,6 +283,10 @@
         let s = document.createElement("style");
         s.innerHTML = CSS;
         document.head.appendChild(s)
+        if (odreadCmptParams == null){
+            alert("odreadCmptParams not set, so cannot resolve book urls! Libby changed their site again!")
+            return;
+        }
 
         buildPirateUi();
     }

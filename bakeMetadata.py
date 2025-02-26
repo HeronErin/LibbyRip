@@ -35,15 +35,15 @@ for chap in metadata["chapters"]:
     chapters[chap["spine"]].append(chap)
 
 for file in workingList:
-    if not file.startswith("Chapter "): continue
-    number = file[len("Chapter "):].split(".")[0]
+    if not file.startswith("Part "): continue
+    number = file[len("Part "):].split(".")[0]
     
     audiofile = eyed3.load(os.path.join(workingDir, file))
     if audiofile.tag is None:
         audiofile.initTag()
     else:
         audiofile.tag.clear()
-    audiofile.tag.title = "Disk " + str(int(number))
+    audiofile.tag.title = "Part " + str(int(number))
     audiofile.tag.artist = authorName
     audiofile.tag.images.set(3, coverBytes, coverMime)
     audiofile.tag.album = metadata["title"]

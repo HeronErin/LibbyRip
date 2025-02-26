@@ -245,7 +245,8 @@
 
       const link = document.createElement('a');
       link.href = downloadUrl;
-      link.download = BIF.map.title.main + '.zip';
+      const authors = BIF.map.creator.filter(creator => creator.role === 'author').map(creator => creator.name);
+      link.download = authors.join(', ') + ' - ' + BIF.map.title.main + '.zip';
       document.body.appendChild(link);
       link.click();
       link.remove();

@@ -200,7 +200,7 @@
       const fetchPromises = urls.map(async (url) => {
         const response = await fetch(url.url);
         const blob = await response.blob();
-        const filename = "Chapter " + paddy(url.index + 1, 3) + ".mp3";
+        const filename = "Part " + paddy(url.index + 1, 2) + ".mp3";
 
         let partElem = document.createElement("div");
         partElem.textContent = "Download of "+ filename + " complete";

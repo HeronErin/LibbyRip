@@ -15,6 +15,8 @@ Rip all your favorite audiobooks from libby!
 
 **NOTE:** If you do not see anything, it _could_ be because TamperMonkey is not set up properly on Chrome (and chromeium based) browsers! See the TamperMonkey [FAQ](https://www.tampermonkey.net/faq.php#Q209) page here for more info.
 
+<a href='https://ko-fi.com/V7V81BFLAH' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi6.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+
 ## Converting into a better format
 
 Some people do not want a folder with a bunch of chapter files, and thats alright. You can use the scripts made by [`Cerina witha Sea`](https://github.com/cerinawithasea) to convert them into a more managable format [here](https://github.com/cerinawithasea/libregrab-m4b-creator)!
@@ -31,7 +33,6 @@ Then simply run the script, and drag-and-drop the extracted folder with your aud
 If you wish to use the script to make metadata, you must `Export audiobook` to include the metadata in the zip file.
 
 <sup>Note If you are getting a `Lame tag CRC check failed` mesage, that is **not** an error, just a warning, and it means nothing for you. It will still bake the metadata, just means _something_, is wrong with the mp3 Libby gave. (Not actually sure what the issue is myself)</sup>
-
 <hr>
 
 **Disclaimer:** This tool is intended for educational and personal research purposes only. The developers do not condone or encourage any illegal activity, including the unauthorized distribution or reproduction of copyrighted content. By using this tool, you accept full responsibility for your actions and agree to comply with all applicable laws. Use at your own risk.

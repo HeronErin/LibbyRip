@@ -1,6 +1,8 @@
 # LibbyRip
 
-Rip all your favorite audiobooks from libby!
+Rip all your favorite audiobooks from libby! 
+
+<sup> Powered by [FFmpeg.js](https://github.com/HeronErin/FFmpeg-js) </sup>
 
 ![Exporting audiobook](imgs/export.png)
 ![Showing chapters](imgs/chapters.png)

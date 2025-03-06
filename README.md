@@ -19,7 +19,7 @@ Rip all your favorite audiobooks from libby!
 
 ## Converting into a better format
 
-Some people do not want a folder with a bunch of chapter files, and thats alright. You can use the scripts made by [`Cerina witha Sea`](https://github.com/cerinawithasea) to convert them into a more managable format [here](https://github.com/cerinawithasea/libregrab-m4b-creator)!
+If the built-in mp3 converter fails, try out the scripts made bu [`Cerina witha Sea`](https://github.com/cerinawithasea) to convert them into the m4b [here](https://github.com/cerinawithasea/libregrab-m4b-creator)!
  
 ## Using the Python script
 

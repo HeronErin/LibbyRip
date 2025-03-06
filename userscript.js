@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name          LibreGRAB
 // @namespace     http://tampermonkey.net/
-// @version       2025-02-25.2
+// @version       2025-03-6
 // @description   Download all the booty!
-// @author        HeronErin
+// @author        PsychedelicPalimpsest
 // @license       MIT
 // @supportURL    https://github.com/HeronErin/LibbyRip/issues
 // @match         *://*.listen.libbyapp.com/*

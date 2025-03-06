@@ -2,12 +2,12 @@
 
 Rip all your favorite audiobooks from libby! 
 
-<sup> Powered by [FFmpeg.js](https://github.com/HeronErin/FFmpeg-js) </sup>
+<sup> Powered by [FFmpeg.js](https://github.com/PsychedelicPalimpsest/FFmpeg-js) </sup>
 
 ![Exporting audiobook](imgs/export.png)
 ![Showing chapters](imgs/chapters.png)
 
-<sup>Be careful, I have had multiple library cards banned in the past from using this tool (See [#14](https://github.com/HeronErin/LibbyRip/issues/14), [#12](https://github.com/HeronErin/LibbyRip/issues/12), and [#8](https://github.com/HeronErin/LibbyRip/issues/8) for more details) </sup>
+<sup>Be careful, I have had multiple library cards banned in the past from using this tool (See [#14](https://github.com/PsychedelicPalimpsest/LibbyRip/issues/14), [#12](https://github.com/PsychedelicPalimpsest/LibbyRip/issues/12), and [#8](https://github.com/PsychedelicPalimpsest/LibbyRip/issues/8) for more details) </sup>
 
 ## How to use
 

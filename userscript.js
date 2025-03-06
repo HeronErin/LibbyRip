@@ -5,7 +5,7 @@
 // @description   Download all the booty!
 // @author        PsychedelicPalimpsest
 // @license       MIT
-// @supportURL    https://github.com/HeronErin/LibbyRip/issues
+// @supportURL    https://github.com/PsychedelicPalimpsest/LibbyRip/issues
 // @match         *://*.listen.libbyapp.com/*
 // @match         *://*.listen.overdrive.com/*
 // @match         *://*.read.libbyapp.com/?*

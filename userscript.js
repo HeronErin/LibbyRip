@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          LibreGRAB
 // @namespace     http://tampermonkey.net/
-// @version       2025-03-05
+// @version       2025-02-25.1
 // @description   Download all the booty!
 // @author        HeronErin
 // @license       MIT
@@ -330,22 +330,11 @@
         });
         ffmpeg.setLogger(console.log);
 
-
-        if (coverName){
-            // Ensure that the cover is a jpeg and that it is not too large
-            await ffmpeg.exec(["-y", "-i", coverName,
-                               "-vf", "scale='min(600,iw)':-1",
-                               "-q:v", "5",
-                               "-update", "1",
-                               "true_cover.jpeg"]);
-        }
-
-
         await ffmpeg.exec([
                            "-y", "-f", "concat",
                            "-i", "files.txt",
                            "-i", "chapters.txt"]
-                          .concat(coverName ? ["-i", "true_cover.jpeg"] : [])
+                          .concat(coverName ? ["-i", coverName] : [])
                           .concat([
                             "-map_metadata", "1",
                             "-codec", "copy",
@@ -357,7 +346,6 @@
                             "-c:a", "copy"])
                           .concat(coverName ? [
                             "-map", "2:v",
-                            "-c:v", "mjpeg",
                             "-metadata:s:v", "title=Album cover",
                             "-metadata:s:v", "comment=Cover (front)"]
                             : [])

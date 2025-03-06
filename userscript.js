@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          LibreGRAB
 // @namespace     http://tampermonkey.net/
-// @version       2025-02-25.1
+// @version       2025-02-25.2
 // @description   Download all the booty!
 // @author        HeronErin
 // @license       MIT
@@ -23,7 +23,7 @@
     function addFFmpegJs(){
         let scriptTag = document.createElement("script");
         scriptTag.setAttribute("type", "text/javascript");
-        scriptTag.setAttribute("src", "https://github.com/HeronErin/FFmpeg-js/releases/download/10/0.12.5.bundle.js");
+        scriptTag.setAttribute("src", "https://github.com/HeronErin/FFmpeg-js/releases/download/12/0.12.5.bundle.js");
         document.body.appendChild(scriptTag);
 
         return new Promise(accept =>{

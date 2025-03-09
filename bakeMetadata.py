@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import eyed3, os, json
 from eyed3.id3 import Tag
 from eyed3.id3.frames import ChapterFrame

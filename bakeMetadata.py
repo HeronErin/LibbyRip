@@ -49,7 +49,6 @@ for file in workingList:
     audiofile.tag.images.set(3, coverBytes, coverMime)
     audiofile.tag.album = metadata["title"]
     audiofile.tag.track_num = (number, len(metadata["spine"]))
-
     
     last = None
 
@@ -71,5 +70,6 @@ for file in workingList:
                                 child_ids=child_ids + [b"last"],
                                 description=u"Table of Contents")
     audiofile.tag.save()
+    print("Baked:", file)
 
     
